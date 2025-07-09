@@ -1,12 +1,11 @@
-import os
 import streamlit as st
 import requests
 from requests.auth import HTTPBasicAuth
 
 st.set_page_config(page_title="Companies House Explorer", layout="wide")
 
-# --- Load API Key ---
-API_KEY = st.secrets["COMPANIES_HOUSE_API_KEY"] if "COMPANIES_HOUSE_API_KEY" in st.secrets else os.getenv("COMPANIES_HOUSE_API_KEY")
+# --- Hard-coded API Key (keep this secret!) ---
+API_KEY = "ZWMwNjhjMGYtNWE4OS00ZDM2LWJlYjctM2VhM2YzNmRmZTQw"
 auth = HTTPBasicAuth(API_KEY, "")
 
 BASE = "https://api.company-information.service.gov.uk"
@@ -16,6 +15,7 @@ def get_json(url):
     if resp.status_code == 200:
         return resp.json()
     else:
+        st.warning(f"API Error {resp.status_code}: {resp.text}")
         return {}
 
 def get_company_profile(company_number):
@@ -153,5 +153,4 @@ if company_number and search_clicked:
                 if not found:
                     st.info("No other directorships found or no insolvency history.")
 
-# Tips and API key warning
-st.sidebar.info("💡 Tip: You must provide your Companies House API key as an environment variable or via Streamlit secrets.")
+st.sidebar.info("💡 Tip: The API key is hard-coded in this app. For security, do not share this file publicly.")
